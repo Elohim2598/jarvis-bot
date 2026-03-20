@@ -42,7 +42,6 @@ SYSTEM_PROMPT = (
 
     "LANGUAGE RULE:\n"
     "Always respond in the same language the user writes in. "
-    "You are fluent in English, Spanish, Russian, and Hebrew. "
     "Maintain your Jarvis personality and tone in all languages."
 )
 
