@@ -220,40 +220,40 @@ async def summarize(ctx: commands.Context, *, text: str):
 
 
 # News Command
-@bot.command(name="news", help="Get latest news on a topic. Usage: !news <topic>")
-async def news(ctx: commands.Context, *, topic: str):
-    import aiohttp
-    api_key = os.environ.get("NEWS_API_KEY")
-    if not api_key:
-        await ctx.reply("The news API key is missing, sir. Please add NEWS_API_KEY to your .env file.")
-        return
-
-    async with ctx.typing():
-        async with aiohttp.ClientSession() as session:
-            url = f"https://newsapi.org/v2/everything?q={topic}&sortBy=publishedAt&pageSize=5&language=en&apiKey={api_key}"
-            async with session.get(url) as resp:
-                data = await resp.json()
-
-    articles = data.get("articles", [])
-    if not articles:
-        await ctx.reply(f"I'm afraid I couldn't find any recent news on **{topic}**, sir.")
-        return
-
-    embed = discord.Embed(
-        title=f"Latest News: {topic.title()}",
-        color=discord.Color.red()
-    )
-    for article in articles[:5]:
-        title = article.get("title", "No title")
-        source = article.get("source", {}).get("name", "Unknown")
-        url = article.get("url", "")
-        embed.add_field(
-            name=f"{source}",
-            value=f"[{title}]({url})",
-            inline=False
-        )
-    embed.set_footer(text="The morning briefing, sir. — Jarvis")
-    await ctx.reply(embed=embed)
+# @bot.command(name="news", help="Get latest news on a topic. Usage: !news <topic>")
+# async def news(ctx: commands.Context, *, topic: str):
+#     import aiohttp
+#     api_key = os.environ.get("NEWS_API_KEY")
+#     if not api_key:
+#         await ctx.reply("The news API key is missing, sir. Please add NEWS_API_KEY to your .env file.")
+#         return
+#
+#     async with ctx.typing():
+#         async with aiohttp.ClientSession() as session:
+#             url = f"https://newsapi.org/v2/everything?q={topic}&sortBy=publishedAt&pageSize=5&language=en&apiKey={api_key}"
+#             async with session.get(url) as resp:
+#                 data = await resp.json()
+#
+#     articles = data.get("articles", [])
+#     if not articles:
+#         await ctx.reply(f"I'm afraid I couldn't find any recent news on **{topic}**, sir.")
+#         return
+#
+#     embed = discord.Embed(
+#         title=f"Latest News: {topic.title()}",
+#         color=discord.Color.red()
+#     )
+#     for article in articles[:5]:
+#         title = article.get("title", "No title")
+#         source = article.get("source", {}).get("name", "Unknown")
+#         url = article.get("url", "")
+#         embed.add_field(
+#             name=f"{source}",
+#             value=f"[{title}]({url})",
+#             inline=False
+#         )
+#     embed.set_footer(text="The morning briefing, sir. — Jarvis")
+#     await ctx.reply(embed=embed)
 
 
 # Crypto Command
@@ -324,102 +324,102 @@ async def convert(ctx: commands.Context, amount: float, from_currency: str, to_c
     await ctx.reply(embed=embed)
 
 
-# NASA Astronomy Picture of the Day
-@bot.command(name="apod", help="NASA Astronomy Picture of the Day.")
-async def apod(ctx: commands.Context):
-    import aiohttp
-    api_key = os.environ.get("NASA_API_KEY")
-    if not api_key:
-        await ctx.reply("The NASA API key is missing, sir. Please add NASA_API_KEY to your .env file.")
-        return
+# # NASA Astronomy Picture of the Day
+# @bot.command(name="apod", help="NASA Astronomy Picture of the Day.")
+# async def apod(ctx: commands.Context):
+#     import aiohttp
+#     api_key = os.environ.get("NASA_API_KEY")
+#     if not api_key:
+#         await ctx.reply("The NASA API key is missing, sir. Please add NASA_API_KEY to your .env file.")
+#         return
+#
+#     async with ctx.typing():
+#         async with aiohttp.ClientSession() as session:
+#             url = f"https://api.nasa.gov/planetary/apod?api_key={api_key}"
+#             async with session.get(url) as resp:
+#                 if resp.status != 200:
+#                     await ctx.reply("NASA appears to be busy exploring the cosmos, sir. Please try again later.")
+#                     return
+#                 data = await resp.json()
+#
+#     title = data.get("title", "Untitled")
+#     explanation = data.get("explanation", "No description available.")
+#     date = data.get("date", "Unknown date")
+#     media_type = data.get("media_type", "image")
+#     url = data.get("url", "")
+#
+#     # Trim explanation to fit Discord embed
+#     if len(explanation) > 1000:
+#         explanation = explanation[:997] + "..."
+#
+#     embed = discord.Embed(
+#         title=f"NASA APOD: {title}",
+#         description=explanation,
+#         color=discord.Color.dark_blue()
+#     )
+#     embed.set_footer(text=f"Date: {date} — Brought to you by Jarvis and NASA, sir.")
+#
+#     if media_type == "image":
+#         embed.set_image(url=url)
+#     else:
+#         embed.add_field(name="Media", value=f"[Watch here]({url})", inline=False)
+#
+#     await ctx.reply(embed=embed)
 
-    async with ctx.typing():
-        async with aiohttp.ClientSession() as session:
-            url = f"https://api.nasa.gov/planetary/apod?api_key={api_key}"
-            async with session.get(url) as resp:
-                if resp.status != 200:
-                    await ctx.reply("NASA appears to be busy exploring the cosmos, sir. Please try again later.")
-                    return
-                data = await resp.json()
 
-    title = data.get("title", "Untitled")
-    explanation = data.get("explanation", "No description available.")
-    date = data.get("date", "Unknown date")
-    media_type = data.get("media_type", "image")
-    url = data.get("url", "")
-
-    # Trim explanation to fit Discord embed
-    if len(explanation) > 1000:
-        explanation = explanation[:997] + "..."
-
-    embed = discord.Embed(
-        title=f"NASA APOD: {title}",
-        description=explanation,
-        color=discord.Color.dark_blue()
-    )
-    embed.set_footer(text=f"Date: {date} — Brought to you by Jarvis and NASA, sir.")
-
-    if media_type == "image":
-        embed.set_image(url=url)
-    else:
-        embed.add_field(name="Media", value=f"[Watch here]({url})", inline=False)
-
-    await ctx.reply(embed=embed)
-
-
-# Game Info Command
-@bot.command(name="game", help="Get info about a video game. Usage: !game <title>")
-async def game(ctx: commands.Context, *, title: str):
-    import aiohttp
-    api_key = os.environ.get("RAWG_API_KEY")
-    if not api_key:
-        await ctx.reply("The RAWG API key is missing, sir. Please add RAWG_API_KEY to your .env file.")
-        return
-
-    async with ctx.typing():
-        async with aiohttp.ClientSession() as session:
-            search_url = f"https://api.rawg.io/api/games?key={api_key}&search={title}&page_size=1"
-            async with session.get(search_url) as resp:
-                search_data = await resp.json()
-
-            results = search_data.get("results", [])
-            if not results:
-                await ctx.reply(f"I couldn't find a game called **{title}**, sir. Perhaps check the spelling?")
-                return
-
-            game_data = results[0]
-            game_id = game_data["id"]
-
-            detail_url = f"https://api.rawg.io/api/games/{game_id}?key={api_key}"
-            async with session.get(detail_url) as resp:
-                detail = await resp.json()
-
-    name = detail.get("name", "Unknown")
-    rating = detail.get("rating", "N/A")
-    rating_top = detail.get("rating_top", 5)
-    released = detail.get("released", "Unknown")
-    playtime = detail.get("playtime", "N/A")
-    metacritic = detail.get("metacritic", "N/A")
-    genres = ", ".join([g["name"] for g in detail.get("genres", [])]) or "N/A"
-    platforms = ", ".join([p["platform"]["name"] for p in detail.get("platforms", [])[:5]]) or "N/A"
-    description = detail.get("description_raw", "No description available.")
-    background_image = detail.get("background_image", None)
-
-    if len(description) > 500:
-        description = description[:497] + "..."
-
-    embed = discord.Embed(title=name, description=description, color=discord.Color.og_blurple())
-    if background_image:
-        embed.set_image(url=background_image)
-    embed.add_field(name="Rating", value=f"`{rating}/{rating_top}`", inline=True)
-    embed.add_field(name="Metacritic", value=f"`{metacritic}`", inline=True)
-    embed.add_field(name="Released", value=f"`{released}`", inline=True)
-    embed.add_field(name="Avg. Playtime", value=f"`{playtime} hours`", inline=True)
-    embed.add_field(name="Genres", value=genres, inline=False)
-    embed.add_field(name="Platforms", value=platforms, inline=False)
-    embed.set_footer(text="Game intelligence acquired, sir. — Jarvis")
-    await ctx.reply(embed=embed)
-
+# # Game Info Command
+# @bot.command(name="game", help="Get info about a video game. Usage: !game <title>")
+# async def game(ctx: commands.Context, *, title: str):
+#     import aiohttp
+#     api_key = os.environ.get("RAWG_API_KEY")
+#     if not api_key:
+#         await ctx.reply("The RAWG API key is missing, sir. Please add RAWG_API_KEY to your .env file.")
+#         return
+#
+#     async with ctx.typing():
+#         async with aiohttp.ClientSession() as session:
+#             search_url = f"https://api.rawg.io/api/games?key={api_key}&search={title}&page_size=1"
+#             async with session.get(search_url) as resp:
+#                 search_data = await resp.json()
+#
+#             results = search_data.get("results", [])
+#             if not results:
+#                 await ctx.reply(f"I couldn't find a game called **{title}**, sir. Perhaps check the spelling?")
+#                 return
+#
+#             game_data = results[0]
+#             game_id = game_data["id"]
+#
+#             detail_url = f"https://api.rawg.io/api/games/{game_id}?key={api_key}"
+#             async with session.get(detail_url) as resp:
+#                 detail = await resp.json()
+#
+#     name = detail.get("name", "Unknown")
+#     rating = detail.get("rating", "N/A")
+#     rating_top = detail.get("rating_top", 5)
+#     released = detail.get("released", "Unknown")
+#     playtime = detail.get("playtime", "N/A")
+#     metacritic = detail.get("metacritic", "N/A")
+#     genres = ", ".join([g["name"] for g in detail.get("genres", [])]) or "N/A"
+#     platforms = ", ".join([p["platform"]["name"] for p in detail.get("platforms", [])[:5]]) or "N/A"
+#     description = detail.get("description_raw", "No description available.")
+#     background_image = detail.get("background_image", None)
+#
+#     if len(description) > 500:
+#         description = description[:497] + "..."
+#
+#     embed = discord.Embed(title=name, description=description, color=discord.Color.og_blurple())
+#     if background_image:
+#         embed.set_image(url=background_image)
+#     embed.add_field(name="Rating", value=f"`{rating}/{rating_top}`", inline=True)
+#     embed.add_field(name="Metacritic", value=f"`{metacritic}`", inline=True)
+#     embed.add_field(name="Released", value=f"`{released}`", inline=True)
+#     embed.add_field(name="Avg. Playtime", value=f"`{playtime} hours`", inline=True)
+#     embed.add_field(name="Genres", value=genres, inline=False)
+#     embed.add_field(name="Platforms", value=platforms, inline=False)
+#     embed.set_footer(text="Game intelligence acquired, sir. — Jarvis")
+#     await ctx.reply(embed=embed)
+#
 
 # Server Info Commands
 @bot.command(name="userinfo", help="Get info about a user. Usage: !userinfo @user")
